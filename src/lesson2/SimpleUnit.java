@@ -26,4 +26,28 @@ public class SimpleUnit { //типо фрейморк для тестирова�
         }
         return notequels;
     }
+
+
+    public static Boolean fizzbuzz1(int actual, int expected){ //когда равен
+        boolean equels = actual == expected;
+        if(equels){
+
+        }
+        else {
+            System.err.println("Test failted " + expected + " but actual " + actual);
+        }
+        return equels;
+    }
+
+    public static Boolean nofizzbuzz1(int actual, int expected){ //когда не равен
+        boolean notequels = actual != expected;
+        if(notequels){
+            //System.out.println("Test passed");
+        }
+        else {
+            System.err.println("Test failted " + expected + " but actual " + actual);
+        }
+
+        return notequels;
+    }
 }

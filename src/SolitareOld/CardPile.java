@@ -11,6 +11,12 @@ class CardPile { //абстрактная стопка не создает эк�
     protected int y;
     private Card firstCard;
 
+    public int getSize() {
+        return size;
+    }
+
+    private int size;
+
     CardPile(int xCoord, int yCoord) {
         x = xCoord;
         y = yCoord;
@@ -30,6 +36,7 @@ class CardPile { //абстрактная стопка не создает эк�
     public void push(Card aCard) { //push
         aCard.link = firstCard;
         firstCard = aCard;
+        size++;
     }
 
     public Card pop() {
@@ -37,33 +44,42 @@ class CardPile { //абстрактная стопка не создает эк�
         if (firstCard != null) {
             result = firstCard;
             firstCard = firstCard.link;
+            size--;
         }
         return result;
     }
 
     // the following are sometimes overridden
 
-    public boolean includes(int tx, int ty) { //координаты куда кликнули мышков находятся в рамках координат стопки
+    public boolean includes(int tx, int ty) { //координаты куда кликнули мышкой находятся в рамках координат стопки
         return x <= tx && tx <= x + Card.width &&
                 y <= ty && ty <= y + Card.height;
     }
 
-    public void select(int tx, int ty) {
-        // do nothing
-    }
+    public Card select(int tx, int ty, Graphics g) { //нарисовать выделение
 
+        // do nothing
+        return null;
+    }
 
 
     public void display(Graphics g) { //обрисовка карт в стопках если первая - лицом,если не первая, то рубашкой вверх
         g.setColor(Color.black);
         if (firstCard == null) {
-            g.drawRect(x, y, Card.width, Card.height);
+            g.drawRect(x, y, Card.width, Card.height); //пустая рамка
         } else {
-            firstCard.draw(g, x, y);
+            firstCard.draw(g, x, y, Color.BLACK); //если карта первая
         }
     }
 
     public boolean canTake(Card aCard) {
         return false;
     }
+
+
+    public void selectNewPlace(int tx, int ty, Graphics g, Card topcard, int num, int NewNum) {//выбирается новое место для карты
+    }
+
 }
+
+

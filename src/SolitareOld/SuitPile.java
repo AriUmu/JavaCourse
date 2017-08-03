@@ -1,5 +1,7 @@
 package SolitareOld;
 
+import java.awt.*;
+
 /**
  * Created by arina on 17.07.17.
  */

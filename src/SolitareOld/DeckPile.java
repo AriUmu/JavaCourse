@@ -1,9 +1,11 @@
 package SolitareOld;
 
+import java.awt.*;
+
 /**
  * Created by arina on 17.07.17.
  */
-class DeckPile extends CardPile { //верхняя правая стопка
+class DeckPile extends CardPile { //верхняя правая колоды
 
     DeckPile(int x, int y) {
         // first initialize parent
@@ -36,10 +38,19 @@ class DeckPile extends CardPile { //верхняя правая стопка
     }
 
     @Override
-    public void select(int tx, int ty) { //реакция на клик мышкой по стопке
+    public Card select(int tx, int ty, Graphics g) { //реакция на клик мышкой по стопке
         if (isEmpty()) {
-            return;
+            while (!Solitare.discardPile.isEmpty()){
+                Solitare.discardPile.top().flip();
+                Solitare.deckPile.push(Solitare.discardPile.pop());
+            }
+
+             //   перекладываем обратно карты работает не трогай
+            return null;
         }
+
         Solitare.discardPile.push(pop()); //перекладывается карта (сначала извлекли потом перевернули и положили в стопку)
+        return null;
     }
+
 }

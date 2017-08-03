@@ -1,5 +1,7 @@
 package SolitareOld;
 
+import java.awt.*;
+
 /**
  * Created by arina on 17.07.17.
  */
@@ -18,24 +20,25 @@ class DiscardPile extends CardPile { //стопка перевернутых к�
     }
 
     @Override
-    public void select(int tx, int ty) { //что делать если на карту кликнули
+    public Card select(int tx, int ty, Graphics g) { //что делать если на карту кликнули
         if (isEmpty()) {
-            return;
+            return null;
         }
         Card topCard = pop();
         for (int i = 0; i < 4; i++) {
             if (Solitare.suitPile[i].canTake(topCard)) {
                 Solitare.suitPile[i].push(topCard);
-                return;
+                return null;
             }
         }
         for (int i = 0; i < 7; i++) {
             if (Solitare.tableau[i].canTake(topCard)) {
                 Solitare.tableau[i].push(topCard);
-                return;
+                return null;
             }
         }
         // nobody can use it, put it back on our list
         push(topCard);
+        return null;
     }
 }

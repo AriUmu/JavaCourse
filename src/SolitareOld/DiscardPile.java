@@ -20,7 +20,7 @@ class DiscardPile extends CardPile { //стопка перевернутых к�
     }
 
     @Override
-    public Card select(int tx, int ty, Graphics g) { //что делать если на карту кликнули
+    public Card select(int o, int tx, int ty, Graphics g) { //что делать если на карту кликнули
         if (isEmpty()) {
             return null;
         }

@@ -56,7 +56,7 @@ class CardPile { //абстрактная стопка не создает эк�
                 y <= ty && ty <= y + Card.height;
     }
 
-    public Card select(int tx, int ty, Graphics g) { //нарисовать выделение
+    public Card select(int i, int tx, int ty, Graphics g) { //нарисовать выделение
 
         // do nothing
         return null;
@@ -77,7 +77,7 @@ class CardPile { //абстрактная стопка не создает эк�
     }
 
 
-    public void selectNewPlace(int tx, int ty, Graphics g, Card topcard, int num, int NewNum) {//выбирается новое место для карты
+    public void selectNewPlace(int tx, int ty, Graphics g, int num, int NewNum) {//выбирается новое место для карты
     }
 
 }

@@ -1,61 +1,14 @@
 package SolitareOld;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by arina on 17.07.17.
  */
 class TablePile extends CardPile {
 
-    class StackSelectedCard{
-        private int size = 0;
-        private Card[] selectedCard;
-
-        public StackSelectedCard() {
-            selectedCard = new Card[54];
-        }
-
-        public boolean push(Card card){
-            /*
-            когда карта попадает в стек ее статус меняется на true
-            загорается зеленым пока находится в стеке
-             */
-
-            if(size >= selectedCard.length){
-                return false;
-            }
-
-            selectedCard[size] = card;
-            size++;
-            return true;
-        }
-
-        public Card tos(){
-            return (size<=0)? null:selectedCard[size-1];
-        }
-
-        public Card popOneCard(){ //вытаскивать по одной карте
-            if(size <= 0){
-                return null;
-            }
-
-            size--;
-            Card result = selectedCard[size];
-             //карта гасится
-            selectedCard[size] = null;
-            return result;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-    }
-
-StackSelectedCard stackSelectedCard = new StackSelectedCard();
-
+    Stack<Card> stack = new Stack();
 
     TablePile(int x, int y, int c) {
         // initialize the parent class
@@ -81,32 +34,40 @@ StackSelectedCard stackSelectedCard = new StackSelectedCard();
     @Override
     public boolean includes(int tx, int ty) {
         // don't test bottom of card
-
         return x <= tx && tx <= x + Card.width &&
-                y <= ty && ty <= y + Card.height * 4;
+                y <= ty && ty <= y + Card.height * 6;
 
-        // return (x <= tx && tx <= x + Card.width);// && y * 3 < ty; //рабочий
     }
 
-
-   static int countSelected = 0; //сколько карт было выбрано
-
-    @Override
-    public Card select(int tx, int ty, Graphics g) { //метод селект в DiscartPile TadlePile дублируются
+    public Card select(int count, int tx, int ty, Graphics g) { //метод селект в DiscartPile TadlePile дублируются
         if (isEmpty()) {
             return null;
         }
 
-        // if face down, then flip
-//        Card topCard = top();
+        int numberOfPile = count - 6;
 
-//        if (!topCard.isFaceUp()) {
-//            topCard.flip();
-//            return;
-//        }
-        // else see if any suit pile can take card
+        int trololo = Solitare.tableau[count - 6].getSize() - 1;
+        System.out.println(trololo * 35 - (ty - Solitare.tableau[count - 6].y)); //если отризательная то нажата по последней карте
 
-        Card topCard = top();
+        int numberOfCard = 0;
+        if (trololo * 35 - (ty - Solitare.tableau[count - 6].y) < 0) {
+            numberOfCard = trololo;
+        }
+        if (trololo * 35 - (ty - Solitare.tableau[count - 6].y) > 0) {
+            numberOfCard = ((ty - Solitare.tableau[count - 6].y) / 35);
+        }
+
+        System.out.println("numberOfPile =  " + numberOfPile); //номер колоды
+        System.out.println("numberOfCard =  " + numberOfCard); //номер карты
+
+
+        Card topCard = top(); //берем верхнюю карту в колоде
+
+
+        int HowCardInPile = Solitare.allPiles[count].getSize(); //сколько карт в данной колоде
+        Solitare.HowToGet = HowCardInPile - numberOfCard; //сколько карт нужно полодить к стек
+
+
         int y = stackDisplay(g, topCard);
         topCard.draw(g, x, y - 35, Color.GREEN);//изменяется цвет при нажатии только последняя одиночная карта
         try {
@@ -114,13 +75,8 @@ StackSelectedCard stackSelectedCard = new StackSelectedCard();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        countSelected ++; //+1 в стек
         return topCard;
-
     }
-
-
-
 
     private int stackDisplay(Graphics g, Card aCard) { //обрисовка карт в стопках
         int localy; //y
@@ -139,77 +95,58 @@ StackSelectedCard stackSelectedCard = new StackSelectedCard();
     }
 
     @Override
-    public void selectNewPlace(int tx, int ty, Graphics g, Card topCard, int num, int newNum) { //переделать
+    public void selectNewPlace(int tx, int ty, Graphics g, int num, int newNum) { //переделать
 
-        for (int i = 0; i < 4; i++) {
-            if (Solitare.suitPile[i].canTake(topCard)) {
+        for (int i = 0; i < Solitare.HowToGet; i++) {
+            if (Solitare.allPiles[num].top().isFaceUp()) { //если карта рубашкой вверх
 
-                if(topCard.link != null && !topCard.link.isFaceUp()){
-                    topCard.link.flip();
-                }
-                Solitare.allPiles[num].pop(); //только в этот момент мы забираем карту
-                Solitare.suitPile[i].push(topCard);
-                return;
+                Solitare.stackofcard.push(Solitare.allPiles[num].pop());   //то кладем ее в стек
+
+                System.out.println("В стеке " + Solitare.HowToGet + " карт");
             }
         }
 
-       //  else see if any other table pile can take card
-        /*
-        когда мы нажимаем второй и след разы то записываем в стек
-         */
-        if(num != newNum) {
-            for (int i = 0; i < 7; i++) {
+        Card topCardBuffStack = Solitare.stackofcard.peek();
 
-//                for (int j = 0; j < countSelected ; j++) {
-//                    stackSelectedCard.push(Solitare.allPiles[num].pop()); //стек с выбраными картами
-//                }
+        //ниже запись карты в колоду с мастями
+        if(newNum == num) {
+            for (int i = 0; i < 4; i++) {
+                if (Solitare.suitPile[i].canTake(topCardBuffStack)) { //не трогать
 
-
-//                Card topCard1 = stackSelectedCard.tos();
-
-                if (Solitare.tableau[i].canTake(topCard)) { //при перекладывании карты открываем следуюзую
-
-                    if (!Solitare.tableau[i].isEmpty()) { //если в стеке есть карта
-
-                        int y = stackDisplay(g, Solitare.tableau[i].top());
-                        Solitare.tableau[i].top().draw(g, x, y - 35, Color.RED);
-
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                  }
-
-                    if (topCard.link != null && !topCard.link.isFaceUp()) {
-                        topCard.link.flip();
+                    if (topCardBuffStack.link != null && !topCardBuffStack.link.isFaceUp()) {
+                        topCardBuffStack.link.flip();
                     }
-
-                   Solitare.allPiles[num].pop(); //только в этот момент мы забираем карту
-
-//                    for (int j = 0; j < countSelected ; j++) {
-//                        Solitare.tableau[i].push(stackSelectedCard.popOneCard());
-//                        countSelected--;
-//                    }
-
-                   Solitare.tableau[i].push(topCard);
+                    Solitare.suitPile[i].push(topCardBuffStack);
+                    Solitare.stackofcard.pop();
+                    System.out.println("Стeк пуст");
                     return;
                 }
             }
         }
-        else{ //если кликаем несколько раз по одной колоде
-            countSelected++; //увеличиваем количество
-//            topCard = topCard.link;
-//            int y = stackDisplay(g, topCard);
-//            topCard.link.draw(g,x,y-35,Color.GREEN); //типо зеленые
 
+        //перекладываем на новую колоду
+
+        if (Solitare.allPiles[newNum].canTake(topCardBuffStack) && num != newNum) { //при перекладывании карты открываем следуюзую
+
+            Card returnTopCard = Solitare.allPiles[num].top();
+            if (returnTopCard != null && !returnTopCard.isFaceUp()) { //переворачиваем следуюзую
+                returnTopCard.flip();
+            }
+
+            while (!Solitare.stackofcard.isEmpty()) {
+                Solitare.allPiles[newNum].push(Solitare.stackofcard.pop());
+            }
+
+            System.out.println("Стек пуст");
+            return;
+        } else {
+            while (!Solitare.stackofcard.isEmpty()) {
+                Solitare.allPiles[num].push(Solitare.stackofcard.pop());
+
+            }
+            System.out.println("Никуда не положили В стеке " + Solitare.stackofcard.size() + " карт");
+            return;
         }
-        return;
     }
 
-
-    public int numberCard(int tx, int ty){ //возвращает номер карты сверху
-        int result = ((ty - 80)/35)+1;
-        return result;
-    }
 }

@@ -38,7 +38,7 @@ class DeckPile extends CardPile { //верхняя правая колоды
     }
 
     @Override
-    public Card select(int tx, int ty, Graphics g) { //реакция на клик мышкой по стопке
+    public Card select(int o, int tx, int ty, Graphics g) { //реакция на клик мышкой по стопке
         if (isEmpty()) {
             while (!Solitare.discardPile.isEmpty()){
                 Solitare.discardPile.top().flip();

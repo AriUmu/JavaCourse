@@ -10,6 +10,7 @@ Written by Tim Budd, Oregon State University, 1996
 
 import java.applet.Applet;
 import java.awt.*;
+import java.util.Stack;
 
 public class Solitare extends Applet {
     static DeckPile deckPile;
@@ -48,24 +49,33 @@ public class Solitare extends Applet {
     static Card topCard; //выбранная
     int num; //номер колоды из всех
     int newNum; //номер выбранной колоды
+    static Stack<Card> stackofcard = new Stack<>();
+    static int HowToGet = 0; //количество карт
+    boolean flag = true;
+
 
     //  @Override
     public boolean mouseDown(Event evt, int x, int y) { //куда щелкнули мышкой
+        //Если стек пустой или num == newNum те записываем все в стек
 
         if (topCard == null) {
             for (int i = 0; i < 13; i++) {
                 if (allPiles[i].includes(x, y)) { // выбирается стопка
-                    topCard = allPiles[i].select(x, y, getGraphics());  // выбрать карту //положить в стек с выбранными картами
+                    topCard = allPiles[i].select(i, x, y, getGraphics());
                     num = i;
                     System.out.println("->" + topCard);
                 }
             }
-        } else {
+        }
+        else {
             for (int i = 0; i < 13; i++) {
                 if (allPiles[i].includes(x, y)) { // выбирается стопка
                     newNum = i;
-                    allPiles[i].selectNewPlace(x, y, getGraphics(), topCard, num, newNum);
+                    allPiles[i].selectNewPlace(x, y, getGraphics(), num, newNum);
                     topCard = null;
+                    newNum = 0; //обнуляем
+                    num = 0;
+
                 }
             }
         }
